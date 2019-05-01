@@ -1,0 +1,75 @@
+.add_img_form{
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 2px #3C3D3F solid;
+    padding: 20px 10px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+}
+
+.add_img_form .form_title{
+    font-size: 15px;
+    font-weight: bold;
+    margin: -20px -10px 20px -10px;
+    padding: 10px 0px 10px 20px;
+    color: white;
+    background-color: #3C3D3F;
+    border-radius: 7px 7px 0px 0px;
+    width: 100%;
+    text-align: center;
+}
+
+.comment_form{
+    margin: auto;
+    border-radius: 10px;
+    border: 2px #3C3D3F solid;
+    padding: 20px 10px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+}
+
+.add_img_form .btn{
+    height: 30px;
+    width: 60px;
+}
+
+.sign_form{
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.sign_form .username_input{
+    width: 50%;
+}
+
+.sign_form .password_input{
+    width: 50%;
+}
+
+.sign_btn{
+    border-radius:10px;
+    text-align:center;
+    font-size: 15px;
+    color: #3C3D3F;
+    background: #ffffff;
+    border: 2px #3C3D3F solid;
+    padding: 5px 10px 5px 10px;
+}
+
+.sign_form .welcome_user{
+    width: 100%;
+}
+
+.form_element{
+     margin-bottom:10px;
+     font-size: 17px;
+     border-radius:10px;
+     padding:5px 10px 5px 10px;
+}
+
+.select_gallery{
+     padding:30px 0px 5px;
+}

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>webgallery</title>
+    <link href="style/form.css" rel="stylesheet" type="text/css"/>
+    <link href="style/main.css" rel="stylesheet" type="text/css"/>
+    <link href="style/gallery.css" rel="stylesheet" type="text/css"/>
+    <link href="style/comment.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+    <header>
+        <a href="" id="title">Webgallery</a>
+        <form class="sign_form">
+            <div class="welcome_user hidden">
+                <div id="logged_in"></div>
+                <button type="button" class = "sign_btn" id="sign_out_btn">Sign out</button>
+            </div>
+            <div class="login_form">
+                <div class="username_input">
+                    <div>User name:</div>
+                    <input type="text" id="user_name" class="img_form_element" placeholder="Enter user name" name="input_user" required/>
+                </div>
+                <div class="password_input">
+                    <div>Password:</div>
+                    <input type="password" id="password" class="img_form_element" placeholder="Enter password" name="password" required/>
+                </div>
+                <div class="sign_in_btns">
+                    <button type="button" class = "sign_btn" id="sign_in_btn" name="action">Log in</button>
+                    <button type="button" class = "sign_btn" id="sign_up_btn" name="action">Sign up</button>
+                </div>
+            </div>
+        </form>
+    </header>
+    
+    <button class = "btn hidden hidden_form" id="add_img_btn">Add an image</button>
+    <form class="add_img_form" id="img_form" style='display: none'>
+        <div class="form_title">Add an image</div>
+        <input type="text" id="img_title" class="img_form_element" placeholder="Enter title" name="input_title" required/>
+        <input type="text" id="img_author_name" class="img_form_element" placeholder="Enter author's name" name="author" required/>
+        <input type="file" class="img_form_element" id="img_upload" name="picture" accept="image/*"/ required/>
+        <input type="submit" class="submit_btn"/>
+    </form>
+    <div class="select_gallery hidden_form hidden">
+        <label class="form_element" id="choose_gallery">Choose gallery
+            <select id="gallery_username" class="form_element">
+            </select>
+        </label>
+        <button type="button" class="sign_btn" id="select_gallery_btn">View</button>
+    </div>
+    <div class="gallery_title hidden"></div>
+    <div class="img_gallery hidden_form hidden">
+        <button class="trans_btn" id="prev_img"> < </button>
+        <div class="img" id="display_img">
+            <!--div>title</div>
+            <img class="gallery_img" src="https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/11/1397210130748/Spring-Lamb.-Image-shot-2-011.jpg">
+            </div-->
+            <button class="btn" id="gallery_del_btn"> Delete </button>
+        </div>
+        <button class="trans_btn" id="next_img"> > </button>
+    </div>
+    <div class="hidden hidden_form" id="comments">
+        <!--div class="comment">
+            <div class="user">
+                    <div class="comment_username">Alice</div>
+                    <div class="comment_date"></div>
+            </div>
+            <div class="comment_content">Ayo</div>
+            <div class="delete-icon"></div>
+        </div>
+        <div class="comment_btn">
+            <button class="trans_btn" id="prev"> Prev </button>
+            <button class="trans_btn" id="next"> Next </button>
+        </div-->
+    </div>
+    <form class="comment_form hidden_form hidden" id="cmt_form">
+        <textarea rows="5" id="cform_content" class="form_element" name="user_comment" placeholder="Enter your comment" required></textarea>
+        <button type="submit" class="btn">comment</button>
+    </form>
+    <footer>
+        <a href='credits.html'>credits</a>
+    </footer>
+    <script src="js/index.js"></script>
+    <script src="js/api.js"></script>
+</body>
+</html>
