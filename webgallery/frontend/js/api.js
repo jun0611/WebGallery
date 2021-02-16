@@ -30,12 +30,6 @@ let api = (function(){
             xhr.send(JSON.stringify(data));
         }
     }
-
-    let img_listeners = [];
-    let comment_listeners = [];
-    let userListeners = [];
-    let signUpListeners = [];
-    let pg = 0;
     
     /*  ******* Data types *******
         image objects must have at least the following attributes:
@@ -53,18 +47,77 @@ let api = (function(){
     
     ****************************** */ 
 
+    let img_listeners = [];
+    let comment_listeners = [];
+    let userListeners = [];
+    let signUpListeners = [];
+    let pg = 0;
+
+    function notifySignUpListeners(user){
+        signUpListeners.forEach(function(listener){
+           getUsers(function(err, users){
+                if (err) console.log(err);
+                listener(users);
+                notifyUserListeners(user);
+            });
+        });
+    }
+
+    function notifyCommentListeners(imgId, pg=0){
+        comment_listeners.forEach(function(listener){
+            getComments(function(err, comments){
+                if (err) console.log(err);
+                listener(comments);
+            }, imgId, pg);
+        });
+    }
+
+    function notify_img_listeners(imgId){
+        img_listeners.forEach(function(listener){
+            if (imgId) {
+                getImage(function(err, img){
+                    if (err) console.log(err);
+                    if(img) {
+                        listener(img);
+                        notifyCommentListeners(imgId);  
+                    }
+                }, imgId)}
+            else {
+                listener(imgId);
+                notifyCommentListeners(imgId)
+            }
+        });
+    }
+
+    let getComments = function(callback, imageId, page=0){
+        send("GET", "/api/comments/" + imageId + "/" + page + "/", null, callback);
+    }
+
+    function getImage(callback, id){
+        send("GET", "/api/image/" + id + "/", null, callback);
+    }
+
+    function notifyUserListeners(username){
+        userListeners.forEach(function(listener){
+            listener(username);
+        });
+    };
+
+    let getUsers = function(callback){
+        send("GET", "/api/users/", null, callback);
+    }
+
     module.signup = function(username, password){
         send("POST", "/signup/", {username, password}, function(err, res){
              if (err) console.log(err);
-             notifyUserListeners(getUsername());
-             notifySignUpListeners();
+             notifySignUpListeners(res);
         });  
     }
     
     module.signin = function(username, password){
         send("POST", "/signin/", {username, password}, function(err, res){
              if (err) console.log(err);
-             notifyUserListeners(getUsername());
+             notifySignUpListeners(res);
         });
     }
 
@@ -74,42 +127,14 @@ let api = (function(){
              notifyUserListeners(res);
         });
     }
-
-    function notifySignUpListeners(){
-        signUpListeners.forEach(function(listener){
-           getUsers(function(err, users){
-                if (err) console.log(err);
-                listener(users);
-            });
-        });
-    }
     
     module.onSignUp = function(listener){
         signUpListeners.push(listener);
-        getUsers(function(err, users){
-            if (err) console.log(err);
-            listener(users);
-        });
-    }
-
-    let getUsername = function(){
-        return document.cookie.replace(/(?:(?:^|.*;\s*)username\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-    }
-
-    let getUsers = function(callback){
-        send("GET", "/api/users/", null, callback);
     }
 
     module.onUserUpdate = function(listener){
         userListeners.push(listener);
-        listener(getUsername());
     }
-
-    function notifyUserListeners(username){
-        userListeners.forEach(function(listener){
-            listener(username);
-        });
-    };
     
     module.addImage = function(title, author, picture, username){
         sendFiles("POST", "/api/images/picture/" + username + "/", {author: author, title: title, picture: picture}, function(err, res){
@@ -117,94 +142,51 @@ let api = (function(){
             if (res) notify_img_listeners(res._id);
         });
     }
-
-    let getImage = function(callback, id=-1){
-        send("GET", "/api/images/" + id + "/", null, callback);
-    }
-
-    module.getDisplayImage = function(callback){
-        send("GET", "/api/displaying/", null, callback);
-    };
     
     // delete an image from the gallery given its imageId
     module.deleteImage = function(imageId){
         send("DELETE", "/api/images/" + imageId + "/", null, function(err, res){
              if (err) return notifyErrorListeners(err);
-             if (!res) notify_img_listeners(-1);
+             if (!res) notify_img_listeners(res);
              else notify_img_listeners(res._id);
         });
     };
     
     // add a comment to an image
     module.addComment = function(imageId, content){
-        send("POST", "/api/comments/", {content: content, imageId: imageId}, function(err, res){
+        send("POST", "/api/comments/" + imageId + "/", {content: content, imageId: imageId}, function(err, res){
              if (err) console.log(err);
              notifyCommentListeners(imageId);
         });  
     };
 
-    let getComments = function(callback, imageId, page=0){
-        send("GET", "/api/comments/" + imageId + "/" + page + "/", null, callback);
-    }
-    
-    // delete a comment to an image
-    module.deleteComment = function(commentId, gallery){
-        send("DELETE", "/api/comments/" + commentId + "/" + gallery + "/", null, function(err, res){
+    module.deleteComment = function(comment, pg){
+        send("DELETE", "/api/comments/" + comment._id + "/", null, function(err, res){
              if (err) console.log(err);
-             console.log(res);
-             notifyCommentListeners(res.imageId);
+             notifyCommentListeners(res.imageId, pg);
         });
     };
-    
-    // register an image listener
-    // to be notified when an image is added or deleted from the gallery
+
+    // to be notified when a change in display image occurs
     module.onImageUpdate = function(listener){
         img_listeners.push(listener);
-        getImage(function(err, img){
-            if (err) console.log(err);
-            listener(img);
-            if (img !== null) notifyCommentListeners(img._id);
-        });
     };
 
-    function notify_img_listeners(imgId){
-        img_listeners.forEach(function(listener){
-            if (!imgId) listener(imgId);
-            getImage(function(err, img){
-                if (err) console.log(err);
-                listener(img);  
-            }, imgId);
-        });
-        notifyCommentListeners(imgId);
-    }
-
-    // register an comment listener
-    // to be notified when a comment is added or deleted to an image
+    // register a comment listener
+    // to be notified when a comment is added or deleted from an image
     module.onCommentUpdate = function(listener){
         comment_listeners.push(listener);
     };
 
-    function notifyCommentListeners(imgId){
-        comment_listeners.forEach(function(listener){
-            getComments(function(err, cmts){
-                if (err) console.log(err);
-                listener(cmts);
-            }, imgId, pg);
-        });
-    }
-
     module.showNextImg = function(imgId){
-        pg = 0;
         notify_img_listeners(imgId);
     };
 
-    module.showNextPg = function(imgId, action){
-        if (action === "next") pg += 1;
-        else pg -= 1;
+    module.showNextPg = function(imgId, pg){
         comment_listeners.forEach(function(listener){
-            getComments(function(err, cmts){
+            getComments(function(err, res){
                 if (err) console.log(err);
-                if (cmts !== null) listener(cmts);
+                listener(res);
             }, imgId, pg);
         });
     };
@@ -217,17 +199,17 @@ let api = (function(){
         });  
     };
     
-    (function refresh(){
-        setTimeout(function(e){
-            module.getDisplayImage(function(err, img){
-                if (err) console.log(err);
-                img_listeners.forEach(function(listener){
-                        listener(img);
-                });
-            });
-            refresh();
-        }, 2000);
-    }());
+    // (function refresh(){
+    //     setTimeout(function(e){
+    //         module.getDisplayImage(function(err, img){
+    //             if (err) console.log(err);
+    //             img_listeners.forEach(function(listener){
+    //                     listener(img);
+    //             });
+    //         });
+    //         refresh();
+    //     }, 2000);
+    // }());
 
     return module;
 })();

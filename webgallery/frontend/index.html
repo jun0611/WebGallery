@@ -33,12 +33,12 @@
         </form>
     </header>
     
-    <button class = "btn hidden hidden_form" id="add_img_btn">Add an image</button>
-    <form class="add_img_form" id="img_form" style='display: none'>
+    <!-- <button class = "btn hidden hidden_form" id="add_img_btn">Add an image</button> -->
+    <form class="add_img_form hidden" id="img_form" style='display: block'>
         <div class="form_title">Add an image</div>
         <input type="text" id="img_title" class="img_form_element" placeholder="Enter title" name="input_title" required/>
         <input type="text" id="img_author_name" class="img_form_element" placeholder="Enter author's name" name="author" required/>
-        <input type="file" class="img_form_element" id="img_upload" name="picture" accept="image/*"/ required/>
+        <input type="file" class="img_form_element" id="img_upload" name="picture" accept="image/*" required/>
         <input type="submit" class="submit_btn"/>
     </form>
     <div class="select_gallery hidden_form hidden">
@@ -46,18 +46,18 @@
             <select id="gallery_username" class="form_element">
             </select>
         </label>
-        <button type="button" class="sign_btn" id="select_gallery_btn">View</button>
+        <!-- <button type="button" class="sign_btn" id="select_gallery_btn">View</button> -->
     </div>
     <div class="gallery_title hidden"></div>
     <div class="img_gallery hidden_form hidden">
-        <button class="trans_btn" id="prev_img"> < </button>
+        <!--button class="trans_btn" id="prev_img"> < </button>
         <div class="img" id="display_img">
-            <!--div>title</div>
+            <div>title</div>
             <img class="gallery_img" src="https://static.guim.co.uk/sys-images/Guardian/Pix/pictures/2014/4/11/1397210130748/Spring-Lamb.-Image-shot-2-011.jpg">
-            </div-->
+            </div>
             <button class="btn" id="gallery_del_btn"> Delete </button>
         </div>
-        <button class="trans_btn" id="next_img"> > </button>
+        <button class="trans_btn" id="next_img"> > </button-->
     </div>
     <div class="hidden hidden_form" id="comments">
         <!--div class="comment">
